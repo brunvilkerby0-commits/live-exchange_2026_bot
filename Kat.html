@@ -1,0 +1,85 @@
+<div id="section-kòmande">
+    <div class="visa-card" id="preview-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-inner">
+            <div class="card-front">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="chip"></div>
+                    <i class="fab fa-cc-visa" style="font-size: 40px;"></i>
+                </div>
+                <div class="card-num">**** **** **** ****</div>
+                <div class="card-info">
+                    <div>NOM DU TITULAIRE<br><span id="pre-name">VOTRE NOM</span></div>
+                    <div>EXP<br><span>12/28</span></div>
+                </div>
+            </div>
+            <div class="card-back">
+                <div class="black-strip"></div>
+                <div class="cvv-area">CVV: ***</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="price-box">
+        <span class="price-tag" id="main-price">$25.00</span>
+        <div class="gift-tag" id="gift-info">Inclut $5.00 de solde initial</div>
+    </div>
+
+    <span class="label-text">Nom konplè sou kat la</span>
+    <input type="text" id="order-name" placeholder="Antre non ou" oninput="updatePreview()">
+
+    <span class="label-text">Chwazi Nivo Kat la</span>
+    <select id="order-level" onchange="updateLevel()">
+        <option value="25">Visa Gold - Or ($25)</option>
+        <option value="30">Visa Platinum - Black ($30)</option>
+        <option value="11">Visa Classic - Bleu ($11)</option>
+    </select>
+
+    <button class="btn-main" onclick="submitOrder()">COMMANDER MAINTENANT</button>
+</div>
+
+<script type="module">
+    // ... (Enpòtasyon Firebase ou yo) ...
+    
+    window.submitOrder = async () => {
+        const name = document.getElementById('order-name').value;
+        const price = document.getElementById('order-level').value;
+        
+        if(!name) return alert("Tanpri mete non ou!");
+
+        const orderData = {
+            user: "BK-2026",
+            nom_kat: name,
+            prix: price,
+            status: "En attente",
+            date: new Date().toISOString()
+        };
+
+        try {
+            // 1. Voye sou Firebase pou ou ka wè l
+            await push(ref(db, 'card_orders'), orderData);
+            
+            // 2. Sistèm Email (Sèvi ak Formspree oswa EmailJS)
+            await fetch("https://formspree.io/f/VOTRE_ID_EMAIL", {
+                method: "POST",
+                body: JSON.stringify(orderData),
+                headers: { 'Accept': 'application/json' }
+            });
+
+            alert("Kòmand ou an voye! W ap jwenn yon email konfimasyon.");
+        } catch (e) {
+            alert("Gen yon erè, eseye ankò.");
+        }
+    }
+
+    window.updateLevel = () => {
+        let level = document.getElementById('order-level').value;
+        let card = document.getElementById('preview-card');
+        document.getElementById('main-price').innerText = "$" + level + ".00";
+        
+        // Chanje koulè selon prix
+        card.className = "visa-card";
+        if(level == "30") card.style.background = "linear-gradient(135deg, #000, #444)";
+        if(level == "11") card.style.background = "linear-gradient(135deg, #112240, #1a3060)";
+        if(level == "25") card.style.background = "linear-gradient(135deg, #bf953f, #fcf6ba, #aa771c)";
+    }
+</script>
