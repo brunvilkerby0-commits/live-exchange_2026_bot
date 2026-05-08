@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Vérification KYC - Live Crypto Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --gold: #d4af37; --navy: #0a192f; --card: #112240; --text: #ccd6f6; --green: #2ecc71; }
+        body { background: var(--navy); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; }
+        h2 { color: var(--gold); text-align: center; text-transform: uppercase; font-size: 18px; margin-bottom: 20px; }
+
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 12px; color: var(--gold); margin-bottom: 5px; }
+        input, select { 
+            width: 100%; padding: 12px; background: var(--card); border: 1px solid rgba(212, 175, 55, 0.2); 
+            border-radius: 10px; color: white; outline: none; box-sizing: border-box;
+        }
+
+        .upload-box {
+            background: var(--card); border: 2px dashed rgba(212, 175, 55, 0.3);
+            padding: 20px; border-radius: 15px; text-align: center; margin-top: 15px;
+        }
+        .btn-select { background: var(--gold); color: var(--navy); padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; display: inline-block; margin-top: 10px; text-decoration: none; border: none; }
+
+        /* SELFIE SECTION */
+        .selfie-wrapper { margin-top: 30px; text-align: center; }
+        #camera-box { display: none; margin-top: 20px; }
+        video, canvas { width: 260px; height: 260px; border-radius: 50%; object-fit: cover; border: 4px solid var(--gold); background: #000; }
+        #photo-preview { display: none; }
+        
+        .btn-capture { background: white; color: black; border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        .btn-submit { width: 100%; background: var(--gold); color: var(--navy); border: none; padding: 15px; border-radius: 12px; font-weight: 900; margin-top: 30px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Vérification d'identité</h2>
+
+    <div class="input-group">
+        <label>PRÉNOM</label>
+        <input type="text" placeholder="Entrez votre prénom">
+    </div>
+
+    <div class="input-group">
+        <label>NOM</label>
+        <input type="text" placeholder="Entrez votre nom">
+    </div>
+
+    <div class="upload-box">
+        <p style="font-size: 13px;">Photo <b>Recto</b> du Document</p>
+        <input type="file" id="recto" style="display:none">
+        <button type="button" class="btn-select" onclick="document.getElementById('recto').click()">Choisir Photo</button>
+    </div>
+
+    <div class="upload-box">
+        <p style="font-size: 13px;">Photo <b>Verso</b> du Document</p>
+        <input type="file" id="verso" style="display:none">
+        <button type="button" class="btn-select" onclick="document.getElementById('verso').click()">Choisir Photo</button>
+    </div>
+
+    <div class="selfie-wrapper">
+        <label>3ÈME ÉTAPE : VÉRIFICATION FACIALE</label><br>
+        <button type="button" id="open-cam" class="btn-select" style="background:transparent; border:1px solid var(--gold); color:var(--gold)">
+            <i class="fas fa-camera"></i> OUVRI KAMERA A
+        </button>
+
+        <div id="camera-box">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas" style="display:none"></canvas>
+            <img id="photo-preview" src="" alt="Selfie Capture">
+            <br>
+            <button type="button" id="snap" class="btn-capture">PRENDRE LA PHOTO</button>
+            <button type="button" id="retake" class="btn-capture" style="display:none; background: #ff4d4d; color: white;">REPRENDRE</button>
+        </div>
+    </div>
+
+    <button type="button" class="btn-submit" onclick="alert('Envoi des données...')">SOUMETTRE LE KYC</button>
+</div>
+
+<script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const snap = document.getElementById('snap');
+    const retake = document.getElementById('retake');
+    const photoPreview = document.getElementById('photo-preview');
+    const cameraBox = document.getElementById('camera-box');
+    const openCam = document.getElementById('open-cam');
+
+    openCam.onclick = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+        video.srcObject = stream;
+        cameraBox.style.display = 'block';
+        openCam.style.display = 'none';
+    };
+
+    snap.onclick = () => {
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        const data = canvas.toDataURL('image/png');
+        photoPreview.src = data;
+        
+        // Kache video a, montre foto a
+        video.style.display = 'none';
+        photoPreview.style.display = 'inline-block';
+        snap.style.display = 'none';
+        retake.style.display = 'inline-block';
+    };
+
+    retake.onclick = () => {
+        video.style.display = 'inline-block';
+        photoPreview.style.display = 'none';
+        snap.style.display = 'inline-block';
+        retake.style.display = 'none';
+    };
+</script>
+
+</body>
+</html>
