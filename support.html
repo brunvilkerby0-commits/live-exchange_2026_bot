@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Support Client - Live Crypto Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --gold: #d4af37; --navy: #0a192f; --card: #112240; --text: #ccd6f6; }
+        body { background: var(--navy); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+
+        .header { text-align: center; margin-bottom: 25px; }
+        h2 { color: var(--gold); text-transform: uppercase; font-size: 20px; letter-spacing: 1px; margin-bottom: 5px; }
+        p.desc { font-size: 12px; opacity: 0.7; margin-top: 0; }
+
+        /* SEKSYON KYC */
+        .kyc-quick-access { display: flex; gap: 10px; margin-bottom: 25px; }
+        .kyc-btn {
+            flex: 1; background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 15px 5px; border-radius: 15px; text-align: center;
+            text-decoration: none; color: white; font-size: 11px; font-weight: bold; transition: 0.3s;
+        }
+        .kyc-btn:active { background: rgba(212, 175, 55, 0.2); transform: scale(0.95); }
+        .kyc-btn i { display: block; font-size: 20px; color: var(--gold); margin-bottom: 8px; }
+
+        /* CHAT BOX */
+        .chat-window {
+            background: var(--card); border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.2);
+            overflow: hidden; display: flex; flex-direction: column; height: 300px; margin-bottom: 25px;
+        }
+        .chat-header { background: rgba(212, 175, 55, 0.1); padding: 12px; text-align: center; font-weight: bold; font-size: 14px; color: var(--gold); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .chat-content { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 13px; line-height: 1.4; }
+        .received { background: #1d2d44; align-self: flex-start; color: white; border-bottom-left-radius: 2px; }
+
+        .chat-input { display: flex; padding: 10px; background: rgba(0,0,0,0.2); gap: 10px; }
+        .chat-input input { flex: 1; background: #0a192f; border: 1px solid rgba(212, 175, 55, 0.3); padding: 10px 15px; border-radius: 20px; color: white; outline: none; font-size: 14px; }
+        .chat-input button { background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 50%; color: var(--navy); cursor: pointer; }
+        
+        /* SOCIAL BUTTONS */
+        .social-label { font-size: 11px; color: var(--gold); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; display: block; text-align: center; }
+        .btn-social {
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            text-decoration: none; padding: 15px; border-radius: 12px; font-weight: bold; margin-bottom: 12px; transition: 0.3s;
+        }
+        .whatsapp { background: #25d366; color: white; }
+        .telegram { background: #0088cc; color: white; }
+        .btn-social:active { transform: scale(0.98); }
+        
+        .back-link { display: block; text-align: center; margin-top: 20px; color: var(--text); opacity: 0.6; text-decoration: none; font-size: 13px; padding-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>Support Client</h2>
+        <p class="desc">Asistans Teknik ak Verifikasyon</p>
+    </div>
+
+    <div class="kyc-quick-access">
+        <a href="kyc.html" class="kyc-btn">
+            <i class="fas fa-user-shield"></i>
+            KYC Compte
+        </a>
+        <a href="kyc-carte.html" class="kyc-btn">
+            <i class="fas fa-credit-card"></i>
+            KYC Carte
+        </a>
+    </div>
+
+    <div class="chat-window">
+        <div class="chat-header"><i class="fas fa-bolt" style="font-size: 10px;"></i> Assistance Live</div>
+        <div class="chat-content">
+            <div class="msg received">Bonjou! Byenvini nan sèvis sipò **Live Crypto Bot**. Kijan nou ka ede w jodi a?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Ekri nou la...">
+            <button><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <div class="social-section">
+        <span class="social-label">Kominote Ofisyèl</span>
+        
+        <a href="https://chat.whatsapp.com/BzP8UWsXtBT3rWj0E2mE4p" target="_blank" class="btn-social whatsapp">
+            <i class="fab fa-whatsapp" style="font-size: 20px;"></i> Gwoup WhatsApp
+        </a>
+        
+        <a href="https://t.me/+Fxy0x8kr9kUwYTRh" target="_blank" class="btn-social telegram">
+            <i class="fab fa-telegram-plane" style="font-size: 20px;"></i> Canal Telegram
+        </a>
+    </div>
+
+    <a href="dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> Tounen sou Dashboard</a>
+
+</body>
+</html>
