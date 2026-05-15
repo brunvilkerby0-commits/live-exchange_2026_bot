@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disney+ - Live Crypto Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --blue: #0063e5; --dark: #040714; --card: #1a1d29; }
+        body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 400px; }
+        .header { text-align: center; margin-bottom: 25px; }
+        .header i { font-size: 60px; color: white; }
+        .order-box { background: var(--card); padding: 30px; border-radius: 15px; border-bottom: 4px solid var(--blue); box-shadow: 0 15px 45px rgba(0, 99, 229, 0.2); }
+        h2 { text-align: center; margin-top: 0; font-weight: 800; letter-spacing: 1.5px; color: #f9f9f9; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 10px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 2px; }
+        select, input { width: 100%; background: #252833; border: 1px solid #31343e; padding: 14px; border-radius: 8px; color: white; outline: none; box-sizing: border-box; }
+        .price-tag { text-align: center; font-size: 35px; font-weight: bold; margin: 20px 0; color: white; text-shadow: 0 0 10px rgba(0, 99, 229, 0.5); }
+        .btn-disney { width: 100%; padding: 16px; background: var(--blue); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.4s; letter-spacing: 1px; }
+        .btn-disney:hover { background: #0483ee; transform: translateY(-2px); }
+        #loader { display: none; margin: 15px auto; border: 3px solid #333; border-top: 3px solid #fff; border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #alert { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 15px 25px; border-radius: 10px; display: none; z-index: 999; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div id="alert"></div>
+
+<div class="container">
+    <div class="header"><i class="fas fa-play-circle"></i></div>
+    <div class="order-box">
+        <h2>DISNEY+</h2>
+        <div class="input-group">
+            <label>Type d'abonnement</label>
+            <select id="plan" onchange="updatePrice()">
+                <option value="Disney Standard" data-price="6.00">Disney+ Standard (1 Mois) - $6.00</option>
+                <option value="Disney Premium" data-price="10.00">Disney+ Premium (No Ads) - $10.00</option>
+                <option value="Bundle Disney/Hulu" data-price="15.00">Bundle Disney+ & Hulu - $15.00</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Email de livraison</label>
+            <input type="email" id="email" placeholder="votre@email.com">
+        </div>
+        <div class="price-tag" id="display-price">$6.00</div>
+        <div id="loader"></div>
+        <button class="btn-disney" id="btn-submit" onclick="finaliser()">Commander Disney+</button>
+    </div>
+</div>
+
+<script>
+    const botToken = "8650927753:AAENrCiVGi4m89bDj7fVz15Ax7nDUVnEYlc";
+    const chatID = "8118891270";
+
+    function updatePrice() {
+        const select = document.getElementById('plan');
+        const price = select.options[select.selectedIndex].getAttribute('data-price');
+        document.getElementById('display-price').innerText = "$" + price;
+    }
+
+    async function finaliser() {
+        const email = document.getElementById('email').value;
+        const plan = document.getElementById('plan').value;
+        const price = document.getElementById('display-price').innerText;
+        const btn = document.getElementById('btn-submit');
+        const loader = document.getElementById('loader');
+
+        if(!email.includes("@")) { showAlert("Email requis ⚠️", "#e74c3c"); return; }
+
+        btn.disabled = true;
+        loader.style.display = "block";
+
+        const msg = `✨ **COMMANDE DISNEY+**\n\n👤 Client: Brunvil Kerby\n📦 Plan: ${plan}\n📧 Email: ${email}\n💰 Prix: ${price}\n🚀 Status: Urgent`;
+
+        try {
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ chat_id: chatID, text: msg, parse_mode: 'Markdown' })
+            });
+            showAlert("Commande reçue ! ✨ Checkez vos emails.", "#0063e5");
+            document.getElementById('email').value = "";
+        } catch (e) {
+            showAlert("Erreur serveur ❌", "#e74c3c");
+        } finally {
+            btn.disabled = false;
+            loader.style.display = "none";
+        }
+    }
+
+    function showAlert(txt, bg) {
+        const a = document.getElementById('alert');
+        a.innerText = txt; a.style.background = bg; a.style.color = "white"; a.style.display = "block";
+        setTimeout(() => a.style.display = "none", 4000);
+    }
+</script>
+</body>
+</html>
