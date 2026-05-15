@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Premium - Live Crypto Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --red: #e50914; --dark: #000000; --card: #181818; }
+        body { background: var(--dark); color: white; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 400px; }
+        .header { text-align: center; margin-bottom: 25px; }
+        .header i { font-size: 60px; color: var(--red); }
+        .order-box { background: var(--card); padding: 30px; border-radius: 10px; border-top: 4px solid var(--red); box-shadow: 0 10px 40px rgba(229, 9, 20, 0.2); }
+        h2 { text-align: center; margin-top: 0; letter-spacing: 1px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 11px; color: #aaa; margin-bottom: 8px; text-transform: uppercase; }
+        select, input { width: 100%; background: #333; border: 1px solid #444; padding: 12px; border-radius: 5px; color: white; outline: none; box-sizing: border-box; }
+        .price-tag { text-align: center; font-size: 35px; font-weight: bold; margin: 20px 0; color: var(--red); }
+        .btn-pay { width: 100%; padding: 15px; background: var(--red); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-pay:disabled { opacity: 0.4; cursor: not-allowed; }
+        #loader { display: none; margin: 15px auto; border: 3px solid #333; border-top: 3px solid var(--red); border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #alert { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 15px 25px; border-radius: 5px; display: none; z-index: 999; font-weight: bold; text-align: center; min-width: 280px; }
+    </style>
+</head>
+<body>
+
+<div id="alert"></div>
+
+<div class="container">
+    <div class="header"><i class="fab fa-netflix"></i></div>
+    <div class="order-box">
+        <h2>NETFLIX</h2>
+        <div class="input-group">
+            <label>Forfait Mensuel</label>
+            <select id="plan" onchange="updatePrice()">
+                <option value="1 Écran (Shared)" data-price="5.00">1 Écran Profil - $5.00</option>
+                <option value="2 Écrans (Shared)" data-price="9.50">2 Écrans Profil - $9.50</option>
+                <option value="Compte Privé 4K" data-price="16.00">Compte Privé (Complet) - $16.00</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Votre Email d'activation</label>
+            <input type="email" id="email" placeholder="votre@email.com">
+        </div>
+        <div class="price-tag" id="display-price">$5.00</div>
+        <div id="loader"></div>
+        <button class="btn-pay" id="btn-submit" onclick="finaliser()">Activer Netflix</button>
+    </div>
+</div>
+
+<script>
+    const botToken = "8650927753:AAENrCiVGi4m89bDj7fVz15Ax7nDUVnEYlc";
+    const chatID = "8118891270";
+
+    function updatePrice() {
+        const select = document.getElementById('plan');
+        const price = select.options[select.selectedIndex].getAttribute('data-price');
+        document.getElementById('display-price').innerText = "$" + price;
+    }
+
+    async function finaliser() {
+        const email = document.getElementById('email').value;
+        const plan = document.getElementById('plan').value;
+        const price = document.getElementById('display-price').innerText;
+        const btn = document.getElementById('btn-submit');
+        const loader = document.getElementById('loader');
+
+        if(!email.includes("@")) { showAlert("Entrez un email valide ⚠️", "#e74c3c"); return; }
+
+        btn.disabled = true;
+        loader.style.display = "block";
+
+        const msg = `🎬 **COMMANDE NETFLIX**\n\n👤 Client: Brunvil Kerby\n📦 Plan: ${plan}\n📧 Email: ${email}\n💰 Prix: ${price}\n✅ Status: En attente`;
+
+        try {
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ chat_id: chatID, text: msg, parse_mode: 'Markdown' })
+            });
+            showAlert("Demande envoyée ! Activation sous peu. ✅", "#2ecc71");
+            document.getElementById('email').value = "";
+        } catch (e) {
+            showAlert("Erreur de connexion ❌", "#e74c3c");
+        } finally {
+            btn.disabled = false;
+            loader.style.display = "none";
+        }
+    }
+
+    function showAlert(txt, bg) {
+        const a = document.getElementById('alert');
+        a.innerText = txt; a.style.background = bg; a.style.color = "white"; a.style.display = "block";
+        setTimeout(() => a.style.display = "none", 4000);
+    }
+</script>
+</body>
+</html>
